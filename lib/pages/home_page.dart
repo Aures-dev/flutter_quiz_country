@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 20),
               Text(
-                "Country Quiz Game!",
+                "Country Quiz Game !",
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  backgroundColor: Colors.orange,
+                  backgroundColor: const Color.fromARGB(255, 255, 157, 10),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),

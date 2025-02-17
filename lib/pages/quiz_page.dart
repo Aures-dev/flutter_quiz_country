@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_flip_card/flutter_flip_card.dart';
 
 class QuizPage extends StatefulWidget {
   const QuizPage({super.key});
@@ -11,6 +12,8 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
+  final flipController = FlipCardController();
+
   int score = 0;
   int questionIndex = 0;
   final String url = 'https://restcountries.com/v3.1/all';
@@ -87,10 +90,10 @@ class _QuizPageState extends State<QuizPage> {
       });
     } else {
       setState(() {
-      // print("Dans quiz page on a : $score");
-      
-      //On passe sur la page sur la page des résultats avec le score en argument
-      Navigator.pushNamed(context, "/result-page", arguments: score);
+        // print("Dans quiz page on a : $score");
+
+        //On passe sur la page sur la page des résultats avec le score en argument
+        Navigator.pushNamed(context, "/result-page", arguments: score);
       });
     }
   }
@@ -101,96 +104,141 @@ class _QuizPageState extends State<QuizPage> {
       backgroundColor: Colors.white,
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade100,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Text(
-                      "Can you guess who I am?",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 100),
-                  //Affichage du drapeau
-                  Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        currentCountry?["flags"]["png"] ?? '',
-                        width: 200,
-                        height: 200,
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            width: 100,
-                            height: 60,
-                            color: Colors.grey[300],
-                            child: const Icon(Icons.error, color: Colors.red),
-                          );
-                        },
+          : Container(
+              decoration: BoxDecoration(color: Colors.grey),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade100,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Text(
+                        "Can you guess who I am ?",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                  ),
-                  const Spacer(),
-                  // Affichage des options de réponses
-                  GridView.builder(
-                    shrinkWrap: true,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 3,
-                    ),
-                    itemCount: randomCountryNames.length,
-                    itemBuilder: (context, index) {
-                      return ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue.shade300,
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                    const SizedBox(height: 100),
+                    //Affichage du drapeau
+                    Center(
+                      child: FlipCard(
+                        frontWidget: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            currentCountry?["flags"]["png"] ?? '',
+                            width: 220,
+                            height: 220,
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                width: 120,
+                                height: 80,
+                                color: Colors.grey[300],
+                                child: const Icon(Icons.error,
+                                    color: Colors.red, size: 40),
+                              );
+                            },
                           ),
                         ),
-                        onPressed: () {
-                          checkAnswer(randomCountryNames[index]);
-                        },
-                        child: Text(
-                          randomCountryNames[index],
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.white),
-                          textAlign: TextAlign.center,
+                        backWidget: Container(
+                          width: 220,
+                          height: 220,
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade300,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 8,
+                                spreadRadius: 2,
+                                offset: Offset(2, 4),
+                              )
+                            ],
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.location_city,
+                                    size: 40, color: Colors.white),
+                                SizedBox(height: 10),
+                                Text(
+                                  "Capitale : ${currentCountry?["capital"]?[0] ?? 'Inconnue'}",
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  //Affichage du score actuel du joueur
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(12),
+                        rotateSide: RotateSide.right,
+                        onTapFlipping: true,
+                        controller: flipController,
+                      ),
                     ),
-                    child: Text(
-                      "Score: $score",
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
+
+                    const Spacer(),
+                    // Affichage des options de réponses
+                    GridView.builder(
+                      shrinkWrap: true,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        childAspectRatio: 3,
+                      ),
+                      itemCount: randomCountryNames.length,
+                      itemBuilder: (context, index) {
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue.shade300,
+                            padding: const EdgeInsets.symmetric(vertical: 18),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onPressed: () {
+                            checkAnswer(randomCountryNames[index]);
+                          },
+                          child: Text(
+                            randomCountryNames[index],
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                ],
+                    const SizedBox(height: 20),
+                    //Affichage du score actuel du joueur
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        "Score: $score",
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
               ),
             ),
     );
