@@ -4,6 +4,8 @@ import 'package:flutter_quiz_country/pages/result_page.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../pages/home_page.dart';
+import '../pages/login_page.dart';
+import '../pages/register_page.dart';
 
 class Routing {
   static Route<dynamic> generateRoutes(RouteSettings routeSettings) {
@@ -15,6 +17,18 @@ class Routing {
             type: PageTransitionType.bottomToTop,
             duration: Duration(milliseconds: 1000),
             child: const HomePage());
+      case '/login':
+        return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            duration: Duration(milliseconds: 500),
+            child: const LoginPage());
+
+      case '/register':
+        return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            duration: Duration(milliseconds: 500),
+            child: const RegisterPage());
+
       case '/quiz-page':
         return PageTransition(
             type: PageTransitionType.rightToLeft,
