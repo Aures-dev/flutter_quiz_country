@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 81, 29, 204)),
         useMaterial3: true,
       ),
-      initialRoute: '/',
+      initialRoute: '/login',
       onGenerateRoute: Routing.generateRoutes,
     );
   }
